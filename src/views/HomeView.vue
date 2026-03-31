@@ -1,11 +1,16 @@
-<script setup></script>
+<script setup>
+    import {
+        useMovieStore
+    } from '../stores/movie'
+
+    const movieStore = useMovieStore();
+</script>
 
 <template>
     <div class="home">
         <div class="featured-movie-card">
             <router-link to="/movie/tt2016894">
-                <img src="/images/movie-img.png"
-                    alt="movie-img" class="featured-movie-image" />
+                <img src="/images/movie-img.png" alt="movie-img" class="featured-movie-image" />
 
                 <div class="movie-detail">
                     <h2>Ek Tha Tiger</h2>
@@ -19,9 +24,9 @@
         </div>
 
         <div class="search-box">
-            <form action="">
+            <form @submit.prevent="movieStore.SearchMovies">
                 <div class="form-group">
-                    <input type="text" placeholder="Search here">
+                    <input type="text" placeholder="Search here" v-model="movieStore.search">
 
                     <input type="submit" value="Search" />
                 </div>
@@ -29,17 +34,17 @@
         </div>
 
         <div class="movie-list">
-            <div class="movie">
+            <div class="movie" v-for="movie in movieStore.movies" :key="movie.imdbID">
                 <router-link to="/movie/tt2016894" class="movie-link">
                     <div class="movie-image">
-                        <img src="https://m.media-amazon.com/images/M/MV5BZjUzOWEzZTMtNDQzYS00ZDI4LWI4NjctNzcyN2NkY2IwMTA4XkEyXkFqcGc@._V1_SX300.jpg"
+                        <img :src="movie.Poster"
                             alt="movie-img" class="featured-movie-image" />
-                        <div class="movie-type">Action Movie,Drama</div>
+                        <div class="movie-type">{{ movie.Type }}</div>
                     </div>
 
                     <div class="movie-detail">
-                        <p class="movie-year">2010</p>
-                        <h2>Ek Tha Tiger</h2>
+                        <p class="movie-year">{{ movie.Year }}</p>
+                        <h2>{{ movie.Title }}</h2>
                     </div>
                 </router-link>
             </div>
@@ -69,7 +74,7 @@
                 background-color: rgba($color: #000000, $alpha: 0.6);
                 padding: 15px;
                 z-index: 1;
-                
+
                 h2 {
                     color: #fff;
                     font-size: 24px;
@@ -134,58 +139,64 @@
             }
         }
 
-        .movie{
-          display: flex;
-          flex-wrap: wrap;
-          margin: 0 8px;
-
-          .movie-link{
+        .movie-list {
             display: flex;
-            flex-direction: column;
-            height: 100%;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 10px;
 
-            .movie-image{
-              position: relative;
-              display: block;
 
-              img{
-                display: block;
-                max-width: 100%;
-                height: 300px;
-                object-fit: cover;
-              }
+            .movie {
+                width: calc(25% - 16px);
+                margin: 0; // আগের margin remove
 
-              .movie-type{
-                position: absolute;
-                padding: 8px 15px;
-                background-color: #34D999;
-                color: #fff;
-                bottom: 10px;
-                left: 0;
-                text-transform: capitalize;
-              }
-            }
+                .movie-link {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
 
-            .movie-detail{
-              background-color: #1e293b;
-              padding: 10px 15px;
-              flex: 1 1 100%;
-              border-radius: 0px 0px 8px 8px;
+                    .movie-image {
+                        position: relative;
+                        display: block;
 
-                .movie-year{
-                  color: #aaa;
-                  font-size: 14px;
-                  margin-bottom: 10px;
+                        img {
+                            display: block;
+                            width: 100%;
+                            height: 300px;
+                            object-fit: cover;
+                        }
+
+                        .movie-type {
+                            position: absolute;
+                            padding: 8px 15px;
+                            background-color: #34D999;
+                            color: #fff;
+                            bottom: 10px;
+                            left: 0;
+                            text-transform: capitalize;
+                        }
+                    }
+
+                    .movie-detail {
+                        background-color: #1e293b;
+                        padding: 10px 15px;
+                        flex: 1 1 100%;
+                        border-radius: 0px 0px 8px 8px;
+
+                        .movie-year {
+                            color: #aaa;
+                            font-size: 14px;
+                            margin-bottom: 10px;
+                        }
+
+                        h2 {
+                            color: #fff;
+                            font-size: 18px;
+                            font-weight: 600;
+                        }
+                    }
                 }
-
-                h2{
-                  color: #fff;
-                  font-size: 18px;
-                  font-weight: 600;
-                }
             }
-          }
-
         }
     }
 </style>
